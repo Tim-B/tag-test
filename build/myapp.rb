@@ -12,8 +12,8 @@ class MyApp
     @git
   end
 
-  def get_commit_id
-    get_git.object('HEAD^').name
+  def is_tag?
+    get_git.object('HEAD^').tag?
   end
 
   def get_current_branch
@@ -21,7 +21,7 @@ class MyApp
   end
 
   def get_release_version
-    get_commit_id
+    is_tag?
   end
 
 end
