@@ -1,0 +1,23 @@
+require './myapp.rb'
+require './tasks/package.rb'
+require './tasks/clean.rb'
+require './tasks/release.rb'
+
+namespace :myapp do
+
+  desc 'Builds release packages and puts them in the release folder'
+  task :package => [:clean] do
+    MyApp::Package.task
+  end
+
+  desc 'Deploys the release packages to GitHub'
+  task :release => [:package] do
+    MyApp::Release.task
+  end
+
+  desc 'Cleans generated release packages'
+  task :clean do
+    MyApp::Clean.task
+  end
+
+end
