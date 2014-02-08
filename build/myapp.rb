@@ -13,7 +13,7 @@ class MyApp
   end
 
   def get_commit_id
-    get_git.object('HEAD^').blob?
+    get_git.object('HEAD^').name
   end
 
   def get_current_branch
