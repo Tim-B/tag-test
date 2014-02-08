@@ -12,8 +12,19 @@ class MyApp
     @git
   end
 
+  def get_current_sha
+    get_git.object('HEAD').sha
+  end
+
+
   def is_tag?
-    get_git.object('HEAD^').tag?
+    my_sha = get_current_sha
+    get_git.tags.each do |tag|
+      if tag.sha == my_sha
+        return true
+      end
+    end
+    return false
   end
 
   def get_current_branch
