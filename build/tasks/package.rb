@@ -1,6 +1,7 @@
 require 'singleton'
 require 'fileutils'
 require 'zip'
+require 'erb'
 
 class MyApp
   class Package
@@ -21,8 +22,7 @@ class MyApp
     end
 
     def copy_src_files
-      package_path = 'build/' + get_package_name_path
-
+      package_path = 'build/' + get_package_name_path + '/' + MyApp.instance.config['src']['dest']
       FileUtils.cd(MyApp.instance.get_src_root) do
         FileUtils.mkdir_p package_path
         Dir.glob('**/*').each do |file|
@@ -40,6 +40,8 @@ class MyApp
 
     def make_full_package
       copy_src_files
+      move_files
+      replace_file_content
       create_archive(
           get_package_name_path + '/',
           MyApp.instance.get_archive_path
@@ -56,7 +58,7 @@ class MyApp
     end
 
     def src_ignore
-      ['build**', '*README.md', '*.iml', '.git**']
+      MyApp.instance.config['src']['ignore']
     end
 
     def create_archive(src_dir, dest)
@@ -65,6 +67,27 @@ class MyApp
         Dir[File.join(src_dir, '**', '**')].each do |file|
           zipfile.add(file.sub(src_dir, ''), file)
         end
+      end
+    end
+
+    def move_files
+      moves = MyApp.instance.config['move']
+      moves.each do |move|
+        src = get_package_name_path + '/' + move['src']
+        dest = get_package_name_path + '/' + move['dest']
+        FileUtils.mv src, dest
+      end
+    end
+
+    def replace_file_content
+      replace = MyApp.instance.config['content_replace']
+      replace.each do |rep|
+        file = get_package_name_path + '/' + rep['file']
+        replaced_text = ERB.new(rep['replace']).result
+        find = rep['find']
+        text = File.read(file)
+        text = text.sub(find, replaced_text)
+        File.open(file, "w") {|content| content.puts text}
       end
     end
 

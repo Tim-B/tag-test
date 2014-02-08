@@ -1,0 +1,16 @@
+src:
+  path: ../
+  dest: upload/
+  ignore:
+    - 'build**'
+    - README.md
+    - '*.iml'
+
+content_replace:
+    - file: upload/index.php
+      find: 0.0.0
+      replace: <%= MyApp.instance.get_release_version %>
+
+move:
+  - src: upload/docs
+    dest: ./docs

@@ -5,6 +5,12 @@ class MyApp
 
   include Singleton
 
+  attr_accessor :config
+
+  def initialize
+    @config = YAML.load_file('package.yml')
+  end
+
   def get_git
     if @git == nil
       @git = Git.open('../')
@@ -21,7 +27,7 @@ class MyApp
     my_sha = get_current_sha
     get_git.tags.each do |tag|
       if tag.sha == my_sha
-        tag
+        return tag
       end
     end
     return false
@@ -48,7 +54,7 @@ class MyApp
   end
 
   def get_src_root
-    '..'
+    @config['src']['path']
   end
 
   def get_archive_name(prefix = '')
