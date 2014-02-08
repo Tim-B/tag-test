@@ -21,18 +21,42 @@ class MyApp
     my_sha = get_current_sha
     get_git.tags.each do |tag|
       if tag.sha == my_sha
-        return true
+        tag
       end
     end
     return false
   end
 
   def get_current_branch
-    get_git.branches.local
+    get_git.current_branch
   end
 
   def get_release_version
-    is_tag?
+    tag = is_tag?
+    if tag
+      return tag.name
+    end
+    return 'branch-' + get_current_branch
+  end
+
+  def get_package_name
+    'myapp-' + get_release_version
+  end
+
+  def get_release_path
+    'release'
+  end
+
+  def get_src_root
+    '..'
+  end
+
+  def get_archive_name(prefix = '')
+    prefix + get_package_name + '.zip'
+  end
+
+  def get_archive_path(prefix = '')
+    get_release_path + '/' + get_archive_name
   end
 
 end
