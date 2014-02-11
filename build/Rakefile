@@ -2,6 +2,7 @@ require './myapp.rb'
 require './tasks/package.rb'
 require './tasks/clean.rb'
 require './tasks/release.rb'
+require './tasks/sync.rb'
 
 namespace :myapp do
 
@@ -13,11 +14,19 @@ namespace :myapp do
   desc 'Deploys the release packages to GitHub'
   task :release => [:package] do
     MyApp::Release.instance.task
+    if MyApp.instance.is_tag?
+      MyApp::Sync.instance.task
+    end
   end
 
   desc 'Cleans generated release packages'
   task :clean do
     MyApp::Clean.instance.task
+  end
+
+  desc 'Syncs any dependant repositories with current repository version'
+  task :sync => [:clean] do
+    MyApp::Sync.instance.task
   end
 
 end

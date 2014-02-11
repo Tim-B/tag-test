@@ -12,13 +12,8 @@ class MyApp
       make_full_package
     end
 
-
-    def get_temp_path
-      MyApp.instance.get_release_path + '/temp'
-    end
-
     def get_package_name_path
-      path = get_temp_path + '/' + MyApp.instance.get_package_name
+      path = MyApp.instance.get_temp_path + '/' + MyApp.instance.get_package_name
     end
 
     def copy_src_files
@@ -26,7 +21,7 @@ class MyApp
       FileUtils.cd(MyApp.instance.get_src_root) do
         FileUtils.mkdir_p package_path
         Dir.glob('**/*').each do |file|
-          if !match_path(file, src_ignore)
+          if !MyApp.instance.match_path(file, src_ignore)
             if File.directory?(file)
               FileUtils.mkdir_p package_path + '/' + file
             else
@@ -46,15 +41,6 @@ class MyApp
           get_package_name_path + '/',
           MyApp.instance.get_archive_path
       )
-    end
-
-    def match_path(path, patterns)
-      patterns.each do |pattern|
-        if File.fnmatch(pattern, path)
-          return true
-        end
-      end
-      return false
     end
 
     def src_ignore

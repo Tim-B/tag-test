@@ -1,0 +1,3 @@
+$foobar = array(
+'hello' => 'World',
+);

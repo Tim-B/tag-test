@@ -104,6 +104,10 @@ class MyApp
       get_gh_api.repos.releases.assets.delete(@user, @repo, asset.id)
     end
 
+    def sync_external_repos
+
+    end
+
     class ReleasePackage
       attr_accessor :version, :file_name, :file_path, :release_id
     end

@@ -1,5 +1,6 @@
 require 'git'
 require 'singleton'
+require 'fileutils'
 
 class MyApp
 
@@ -63,6 +64,19 @@ class MyApp
 
   def get_archive_path(prefix = '')
     get_release_path + '/' + get_archive_name
+  end
+
+  def get_temp_path
+    get_release_path + '/temp'
+  end
+
+  def match_path(path, patterns)
+    patterns.each do |pattern|
+      if File.fnmatch(pattern, path)
+        return true
+      end
+    end
+    return false
   end
 
 end
